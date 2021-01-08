@@ -62,8 +62,8 @@ For the complete information, please refer to the [license](./LICENSE) file.
 
 
 
-[version-badge]: https://img.shields.io/npm/v/serverless-plugin-browserifier.svg?style=flat-square
-[downloads-badge]: https://img.shields.io/npm/dm/serverless-plugin-browserifier.svg?style=flat-square
+[version-badge]: https://img.shields.io/npm/v/@digitalmaas/serverless-plugin-sqs-alarms.svg?style=flat-square
+[downloads-badge]: https://img.shields.io/npm/dm/@digitalmaas/serverless-plugin-sqs-alarms.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/@digitalmaas/serverless-plugin-sqs-alarms
 [serverless-badge]: https://img.shields.io/badge/serverless-%E2%9A%A1-yellow.svg?colorB=555555&style=flat-square
 [serverless-url]: http://www.serverless.com
