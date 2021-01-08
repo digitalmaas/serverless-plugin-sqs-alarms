@@ -1,3 +1,18 @@
-coverage
-node_modules
-*.log
+*_*/
+
+# git conflict files
+*.orig
+*.rej
+
+# common log files
+npm-debug.log*
+selenium-debug.log
+
+# common editor and system directories and files
+.DS_Store
+.idea
+.sublime-*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
