@@ -1,89 +1,76 @@
-# ⚡️ Serverless Plugin for SQS CloudWatch Alarms
+Serverless SQS CloudWatch Alarms Plugin
+=======================================
 
-[![npm](https://img.shields.io/npm/v/serverless-sqs-alarms-plugin.svg)](https://www.npmjs.com/package/serverless-sqs-alarms-plugin)
-[![CircleCI](https://img.shields.io/circleci/project/github/sbstjn/serverless-sqs-alarms-plugin.svg)](https://circleci.com/gh/sbstjn/serverless-sqs-alarms-plugin)
-[![license](https://img.shields.io/github/license/sbstjn/serverless-sqs-alarms-plugin.svg)](https://github.com/sbstjn/serverless-sqs-alarms-plugin/blob/master/LICENSE.md)
-[![Coveralls](https://img.shields.io/coveralls/sbstjn/serverless-sqs-alarms-plugin.svg)](https://coveralls.io/github/sbstjn/serverless-sqs-alarms-plugin)
+[![serverless][serverless-badge]][serverless-url]
+[![NPM version][version-badge]][npm-url]
+[![digitalmaas][dmaas-badge]][dmaas-url]
+[![NPM downloads][downloads-badge]][npm-url]
+[![CircleCI][circleci-badge]][circleci-url]
 
-## About the plugin
+> A [Serverless][serverless-url] plugin that simplifies the setup of CloudWatch Alarms to monitor the visible messages in an SQS queue.
 
-This serverless plugin is a wrapper to configure CloudWatch Alarms to monitor the visible messages in an SQS queue. You need to provide the SQS *queue name* and SNS *topic* which will receive the `Alarm` and `OK` messages.
-
-## Usage
-
-Add the npm package to your project:
-
+Installation
+------------
+From your target serverless project, run:
 ```bash
-# Via yarn
-$ yarn add serverless-sqs-alarms-plugin
-
-# Via npm
-$ npm install serverless-sqs-alarms-plugin --save
+$ npm install --save-dev @digitalmaas/serverless-plugin-sqs-alarms
 ```
 
 Add the plugin to your `serverless.yml`:
-
 ```yaml
 plugins:
-  - serverless-sqs-alarms-plugin
+  - '@digitalmaas/serverless-plugin-sqs-alarms'
 ```
 
+Configuration
+-------------
 Configure alarms in `serverless.yml`:
-
 ```yaml
 custom:
-  sqs-alarms:
-    - queue: your-sqs-queue-name
-      topic: your-sns-topic-name
-      name: your-alarm-name # optional parameter
+  sqsAlarms:
+    - name: your-alarm-name           # optional, unless your queue is a reference (e.g. `Ref`)
+      queue: your-sqs-queue-name
+      topic: your-sns-topic-name      # references can used, e.g. `Ref`, `Fn::ImportValue`
+      treatMissingData: breaching     # optional, <ignore|missing|breaching|notBreaching>
+      evaluationPeriods: 1            # optional, default 1
+      period: 60                      # optional, default 60
       thresholds:
         - 1
         - 50
-        - 100
-        - 500
-      treatMissingData: string | array[] # optional parameter
+        - value: 500
+          period: 300                 # optional, overrides upper level config
+          evaluationPeriods: 1        # optional, overrides upper level config
+          treatMissingData: ignore    # optional, overrides upper level config
 ```
 
-> The `treatMissingData` setting can be a string which is applied to all alarms, or an array to configure alarms individually. Valid types are `ignore, missing, breaching, notBreaching`, [more details in the AWS docs …](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data)
+The `treatMissingData` setting can be a string which is applied to all alarms, or an array to configure alarms individually. Valid types are `ignore, missing, breaching, notBreaching` ([more details in the AWS docs](http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data)).
 
-That's it! With this example your SNS topic will receive a message when there are more than 1, 50, 100, and 500 visible in SQS.
+In the example above, your SNS topic would receive a message when there are more than 1, 50, and 500 visible in SQS.
 
-## CloudWatch Alarms
+More Info
+---------
+- [AWS::CloudWatch::Alarm documentation][aws-alarm-docs]
+- [Available CloudWatch metrics for Amazon SQS][aws-sqs-metrics]
 
-The created CloudWatch Alarms look like this:
+License
+-------
+MIT License.
 
-```json
-{
-  "Type": "AWS::CloudWatch::Alarm",
-  "Properties": {
-    "AlarmDescription": "Alarm if queue contains more than 100 messages",
-    "Namespace": "AWS/SQS",
-    "MetricName": "ApproximateNumberOfMessagesVisible",
-    "Dimensions": [
-      {
-        "Name": "QueueName",
-        "Value": "your-sqs-queue-name"
-      }
-    ],
-    "Statistic": "Sum",
-    "Period": 60,
-    "EvaluationPeriods": 1,
-    "Threshold": 100,
-    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-    "AlarmActions": [
-      { "Fn::Join": [ "", [ "arn:aws:sns:eu-west-1:", { "Ref": "AWS::AccountId" }, ":your-sns-topic-name" ] ] }
-    ],
-    "OKActions": [
-      { "Fn::Join": [ "", [ "arn:aws:sns:eu-west-1:", { "Ref": "AWS::AccountId" }, ":your-sns-topic-name" ] ] }
-    ]
-  }
-}
-```
+This project has been forked from the original [serverless-sqs-alarms-plugin][original-plugin] and published under a different name, as the original has been abandoned.
 
-## License
+For the complete information, please refer to the [license](./LICENSE) file.
 
-Feel free to use the code, it's released using the [MIT license](https://github.com/sbstjn/serverless-sqs-alarms-plugin/blob/master/LICENSE.md).
 
-## Contribution
 
-Feel free to contribute to this project! Thanks 😘
+[version-badge]: https://img.shields.io/npm/v/serverless-plugin-browserifier.svg?style=flat-square
+[downloads-badge]: https://img.shields.io/npm/dm/serverless-plugin-browserifier.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/@digitalmaas/serverless-plugin-sqs-alarms
+[serverless-badge]: https://img.shields.io/badge/serverless-%E2%9A%A1-yellow.svg?colorB=555555&style=flat-square
+[serverless-url]: http://www.serverless.com
+[dmaas-badge]: https://img.shields.io/badge/sponsored%20by-digitalmaas-green.svg?colorB=00CD98&style=flat-square
+[dmaas-url]: https://digitalmaas.com/
+[circleci-badge]: https://img.shields.io/circleci/project/github/digitalmaas/serverless-plugin-sqs-alarms.svg?style=flat-square
+[circleci-url]: https://circleci.com/gh/digitalmaas/serverless-plugin-sqs-alarms
+[original-plugin]: https://github.com/sbstjn/serverless-sqs-alarms-plugin
+[aws-alarm-docs]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cw-alarm.html
+[aws-sqs-metrics]: https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-available-cloudwatch-metrics.html

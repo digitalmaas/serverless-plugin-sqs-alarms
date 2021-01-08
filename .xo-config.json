@@ -1,0 +1,16 @@
+{
+  "space": true,
+  "semicolon": false,
+  "prettier": true,
+  "rules": {
+    "padding-line-between-statements": 0
+  },
+  "overrides": [
+    {
+      "files": ["lib/*.test.{j,t}s?(x)", "test/**/*.js"],
+      "plugin": ["jest"],
+      "env": "jest",
+      "extends": ["plugin:jest/recommended"]
+    }
+  ]
+}

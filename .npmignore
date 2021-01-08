@@ -1,3 +1,9 @@
-test
-coverage
-circle.yml
+# blacklists it all
+/*
+
+# enable only the needed files
+!CHANGELOG.md
+!README.md
+!LICENSE
+!package.json
+!lib/*.js
